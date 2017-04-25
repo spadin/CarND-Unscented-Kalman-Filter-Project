@@ -74,6 +74,9 @@ public:
   ///* the current NIS for laser
   double NIS_laser_;
 
+  // previous timestamp
+  long previous_timestamp_;
+
   /**
    * Constructor
    */
@@ -108,6 +111,16 @@ public:
    * @param meas_package The measurement at k+1
    */
   void UpdateRadar(MeasurementPackage meas_package);
+
+  /**
+   * Helper function
+   */
+  VectorXd PolarToCartesian(const VectorXd& x_state);
+
+  MatrixXd AugmentedSigmaPoints();
+  void SigmaPointPrediction(MatrixXd Xsig_aug, double delta_t);
+  void PredictMeanAndCovariance();
+	double NormalizeAngle(double pValue);
 };
 
 #endif /* UKF_H */

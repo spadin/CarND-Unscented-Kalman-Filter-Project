@@ -1,0 +1,4 @@
+cd build
+cmake ..
+make
+./UnscentedKF ../data/input.txt ../data/output.txt
