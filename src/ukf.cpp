@@ -93,18 +93,18 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 
     previous_timestamp_ = meas_package.timestamp_;
 
-    if(use_laser_ && meas_package.sensor_type_ == MeasurementPackage::LASER) {
+    if(meas_package.sensor_type_ == MeasurementPackage::LASER) {
       x_ << meas_package.raw_measurements_[0], meas_package.raw_measurements_[1], 0, 0, 0;
       is_initialized_ = true;
-      return;
     }
 
-    if(use_radar_ && meas_package.sensor_type_ == MeasurementPackage::RADAR) {
+    if(meas_package.sensor_type_ == MeasurementPackage::RADAR) {
       VectorXd cartesian = PolarToCartesian(meas_package.raw_measurements_);
       x_ << cartesian[0], cartesian[1], meas_package.raw_measurements_[2], 0, 0;
       is_initialized_ = true;
-      return;
     }
+
+    return;
   }
 
   long current_timestamp = meas_package.timestamp_;
@@ -134,9 +134,9 @@ VectorXd UKF::PolarToCartesian(const VectorXd& x_state) {
 
   VectorXd cartesian(4);
   cartesian << px,
-            py,
-            vx,
-            vy;
+               py,
+               vx,
+               vy;
 
   return cartesian;
 }
@@ -224,6 +224,9 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 
     // state difference
     VectorXd x_diff = Xsig_pred_.col(i) - x_;
+
+    // angle normalization
+    x_diff(3) = NormalizeAngle(x_diff(3));
 
     Tc = Tc + weights_(i) * x_diff * z_diff.transpose();
   }
