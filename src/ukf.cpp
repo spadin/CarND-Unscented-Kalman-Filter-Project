@@ -154,7 +154,7 @@ void UKF::Prediction(double delta_t) {
   vector, x_. Predict sigma points, the state, and the state covariance matrix.
   */
 
-  MatrixXd Xsig_aug = MatrixXd(15, 7);
+  MatrixXd Xsig_aug = MatrixXd(n_aug_, 2 * n_aug_ + 1);
   Xsig_aug = AugmentedSigmaPoints();
   SigmaPointPrediction(Xsig_aug, delta_t);
   PredictMeanAndCovariance();
@@ -280,7 +280,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     double psi = Xsig_pred_(3,i);
 
     Zsig(0,i) = sqrt(p_x * p_x + p_y * p_y);
-    Zsig(1,i) = atan(p_y / p_x);
+    Zsig(1,i) = atan2(p_y , p_x);
     Zsig(2,i) = (p_x * cos(psi) * v + p_y * sin(psi) * v) / Zsig(0,i);
 
   }

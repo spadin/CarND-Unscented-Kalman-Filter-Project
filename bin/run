@@ -1,4 +1,5 @@
 cd build
 cmake ..
 make
-./UnscentedKF ../data/input.txt ../data/output.txt
+cd ..
+./build/UnscentedKF $1 ./data/output.txt
